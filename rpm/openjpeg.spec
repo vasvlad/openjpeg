@@ -1,3 +1,4 @@
+%define keepstatic 1
 Name:    openjpeg
 Version: 2.5.0
 Release: 1
@@ -20,6 +21,13 @@ Requires: openjpeg = %{version}-%{release}
 %description utils
 The openjpeg-utils package contains command-line tools.
 
+%package  devel-static
+Summary:  Development files for openjpeg
+
+%description devel-static
+The openjpeg-devel package contains libraries and header files for
+developing applications that use OpenJPEG.
+
 %package  devel
 Summary:  Development files for openjpeg
 Requires: openjpeg = %{version}-%{release}
@@ -35,7 +43,8 @@ developing applications that use OpenJPEG.
 %build
 if [ ! -d build ] ; then mkdir build; fi
 pushd build
-%cmake -DBUILD_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON \
+%cmake -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON \
+       -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
        -DCMAKE_BUILD_TYPE=Release \
        -DOPENJPEG_INSTALL_LIB_DIR=%{_lib} \
        ..
@@ -65,6 +74,10 @@ popd
 %{_bindir}/opj_compress
 %{_bindir}/opj_decompress
 %{_bindir}/opj_dump
+
+%files devel-static
+%defattr(-,root,root,-)
+%{_libdir}/*.a
 
 %files devel
 %defattr(-,root,root,-)
